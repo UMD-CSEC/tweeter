@@ -51,7 +51,7 @@ div.verified-ad {
 	inherits: false;
 }
 
-marquee.ad-title {
+marquee.cool-title {
 	font-size: 2em;
 	font-weight: bold;
 	color: hsl(var(--adcolor) 100% 50%);

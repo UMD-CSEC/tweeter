@@ -254,7 +254,7 @@ async fn post_login(
         jar = jar.add(Cookie::new("user", sign_in.username));
     }
 
-    Ok((jar, Redirect::to("/")))
+    Ok((jar, Redirect::to(&format!("/?success={}", "Login successful!"))))
 }
 
 async fn post_logout(jar: SignedCookieJar) -> Result<(SignedCookieJar, Redirect)> {
