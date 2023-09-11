@@ -3,6 +3,31 @@
 <head>
 <link rel="stylesheet" href="/assets/style.css">
 <link rel="icon" type="image/x-icon" href="/assets/favicon.png">
+<script>
+	window.addEventListener("load", function() {
+		const marquee = document.querySelector("marquee.cool-title");
+		const verifdiv = document.querySelector("div.verified-ad");
+		let adcolor = 0;
+		let adangle = 0;
+		let adangledir = 10;
+		let dblangle = 150;
+		let dblangledir = 0;
+		setInterval(function() {
+			adcolor += 1;
+			if (adcolor > 360) adcolor %= 360;
+			marquee.style.color = `hsl(${adcolor}deg 100% 50%)`;
+
+			adangle += adangledir;
+			dblangle += dblangledir;
+			if (adangle > 360 || adangle < -360) adangle %= 360;
+			if (dblangle > 360 || dblangle < -360) dblangle %= 360;
+			adangledir -= Math.sin(adangle*Math.PI/180);
+			dblangledir -= Math.sin(dblangle*Math.PI/180);
+			adangledir -= Math.cos(dblangle*Math.PI/180)*Math.sin(adangle*Math.PI/180);
+			verifdiv.style.background = `linear-gradient(${Math.round(adangle)}deg, #f66, lightgreen, skyblue)`;
+		}, 30)
+	});
+</script>
 <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
@@ -25,13 +50,15 @@
     <a href="/login" class="link">Sign In</a>
 {% endif %}
 </div>
-<div class="verified-ad">
-	<marquee class="cool-title">get blue RIGHT NOW</marquee>
-	<p>Pay us $8 to get blue!</p>
-	<p>Benefits include:</p>
-	<ul>
-		<li>TBD</li>
-	</ul>
+<div class="leftbar">
+	<div class="verified-ad">
+		<marquee class="cool-title">get blue RIGHT NOW</marquee>
+		<p>Pay us $8 to get blue!</p>
+		<p>Benefits include:</p>
+		<ul>
+			<li>TBD</li>
+		</ul>
+	</div>
 </div>
 {% block body %}{% endblock %}
 </body>

@@ -25,45 +25,22 @@ body {
 	align-items: start;
 }
 
-@property --adangle {
-	syntax: '<angle>';
-	initial-value: 0deg;
-	inherits: false;
+div.leftbar {
+	grid-area: leftbar;
+	position: relative;
 }
 
 div.verified-ad {
+	position: fixed;
 	border: 3px solid black;
 	border-radius: 15px;
 	padding: 6px;
 	margin: 5px;
-	background: linear-gradient(var(--adangle), #f66, lightgreen, skyblue);
-	animation: 2s linear 0s infinite alternate anglecycle;
-}
-
-@keyframes anglecycle {
-	0% { --adangle: -50deg; }
-	100% { --adangle: 80deg; }
-}
-
-@property --adcolor {
-	syntax: '<number>';
-	initial-value: 0;
-	inherits: false;
 }
 
 marquee.cool-title {
 	font-size: 2em;
 	font-weight: bold;
-	color: hsl(var(--adcolor) 100% 50%);
-	animation: 3s infinite normal colorcycle;
-}
-
-@keyframes colorcycle {
-	0% { --adcolor: 0; }
-	25% { --adcolor: 90; }
-	50% { --adcolor: 180; }
-	75% { --adcolor: 270; }
-	100% { --adcolor: 360; }
 }
 
 div.verified-ad h2 {
