@@ -1,7 +1,7 @@
 use std::{
     net::SocketAddr,
     ops::Deref,
-    sync::{Arc, Mutex}, collections::HashMap,
+    sync::{Arc, Mutex}, collections::HashMap, env,
 };
 
 use anyhow::anyhow;
@@ -93,10 +93,15 @@ async fn main() {
         datetime.format("%b %-d, %Y %-I:%M:%S").to_string()
     });
 
+    let admin_password = match env::var("ADMIN_PASS") {
+        Ok(val) => val,
+        Err(_) => String::from("pepegaman123"),
+    };
+
     let state = AppState::new(MemDb::new(), env);
     {
         let mut db = state.db.lock().unwrap();
-        let admin = User::new("admin", "pepegaman123", UserRole::Admin, true);
+        let admin = User::new("admin", &admin_password, UserRole::Admin, true);
         db.add_user(admin).unwrap();
     }
 
@@ -119,7 +124,7 @@ async fn main() {
         .with_state(state)
         .layer(TraceLayer::new_for_http());
 
-    axum::Server::bind(&"127.0.0.1:1447".parse().unwrap())
+    axum::Server::bind(&"0.0.0.0:1447".parse().unwrap())
         .serve(app.into_make_service_with_connect_info::<SocketAddr>())
         .await
         .unwrap();
