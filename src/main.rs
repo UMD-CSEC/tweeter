@@ -1,12 +1,14 @@
 use std::{
+    collections::HashMap,
+    env,
     net::SocketAddr,
     ops::Deref,
-    sync::{Arc, Mutex}, collections::HashMap, env,
+    sync::{Arc, Mutex},
 };
 
 use anyhow::anyhow;
 use axum::{
-    extract::{FromRef, State, Path},
+    extract::{FromRef, Path, State},
     http::{Request, StatusCode},
     middleware::{self, Next},
     response::{Html, IntoResponse, Redirect, Response, Result},
@@ -18,11 +20,11 @@ use axum_extra::extract::{
     cookie::{Cookie, Key},
     SignedCookieJar,
 };
-use chrono::{TimeZone, Local};
+use chrono::{Local, TimeZone};
 use minijinja::{context, path_loader, Environment};
 use serde::Deserialize;
 
-use tower_http::{trace::TraceLayer, services::ServeDir};
+use tower_http::{services::ServeDir, trace::TraceLayer};
 
 use db::{AppDb, MemDb, User, UserRole};
 use tracing::Level;
@@ -144,9 +146,12 @@ async fn get_index(
 
     // yes this is slow
     // but prolly ok for small amount of users B)
-    let user_map: HashMap<u64, User> = db.get_users().unwrap().into_iter().map(|user| {
-        (user.id(), user)
-    }).collect();
+    let user_map: HashMap<u64, User> = db
+        .get_users()
+        .unwrap()
+        .into_iter()
+        .map(|user| (user.id(), user))
+        .collect();
 
     // get current user
     let user = if let Some(username) = jar.get("user") {
@@ -252,9 +257,7 @@ async fn post_login(
     Ok((jar, Redirect::to("/")))
 }
 
-async fn post_logout(
-    jar: SignedCookieJar,
-) -> Result<(SignedCookieJar, Redirect)> {
+async fn post_logout(jar: SignedCookieJar) -> Result<(SignedCookieJar, Redirect)> {
     let jar = if let Some(username) = jar.get("user") {
         jar.remove(username)
     } else {
@@ -265,19 +268,27 @@ async fn post_logout(
 
 async fn get_create_post(
     State(state): State<AppState<impl AppDb>>,
-    jar: SignedCookieJar
+    jar: SignedCookieJar,
 ) -> Result<Html<String>> {
     let Some(username) = jar.get("user")  else {
         return Err(Redirect::to("/login").into());
     };
 
-    let db = state.db.lock().map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
-    let user = db.get_user_by_name(username.value()).map_err(|_| Redirect::to("/logout"))?;
+    let db = state
+        .db
+        .lock()
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+    let user = db
+        .get_user_by_name(username.value())
+        .map_err(|_| Redirect::to("/logout"))?;
 
     let tmpl = state.env.get_template("create_post.html").unwrap();
-    Ok(Html(tmpl.render(context! {
-        user
-    }).unwrap()))
+    Ok(Html(
+        tmpl.render(context! {
+            user
+        })
+        .unwrap(),
+    ))
 }
 
 #[derive(Deserialize)]
@@ -294,8 +305,13 @@ async fn post_create_post(
         return Ok(Redirect::to("/login"));
     };
 
-    let mut db = state.db.lock().map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
-    let user = db.get_user_by_name(username.value()).map_err(|_| Redirect::to("/logout"))?;
+    let mut db = state
+        .db
+        .lock()
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+    let user = db
+        .get_user_by_name(username.value())
+        .map_err(|_| Redirect::to("/logout"))?;
 
     let post = Post::new(&user, &form.contents);
     db.add_post(post).unwrap();
@@ -307,13 +323,24 @@ async fn get_profile(
     State(state): State<AppState<impl AppDb>>,
     Path(user_id): Path<u64>,
 ) -> Result<Html<String>> {
-    let db = state.db.lock().map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
-    let user = db.get_user_by_id(user_id).map_err(|_| (StatusCode::NOT_FOUND, format!("no user with id {}", user_id)))?;
+    let db = state
+        .db
+        .lock()
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+    let user = db.get_user_by_id(user_id).map_err(|_| {
+        (
+            StatusCode::NOT_FOUND,
+            format!("no user with id {}", user_id),
+        )
+    })?;
 
     let tmpl = state.env.get_template("profile.html").unwrap();
-    Ok(Html(tmpl.render(context! {
-        user
-    }).unwrap()))
+    Ok(Html(
+        tmpl.render(context! {
+            user
+        })
+        .unwrap(),
+    ))
 }
 
 async fn get_settings(
@@ -414,9 +441,29 @@ async fn auth_admin<B>(
     Err(StatusCode::UNAUTHORIZED)
 }
 
-async fn get_admin(State(state): State<AppState<impl AppDb>>) -> Html<String> {
+async fn get_admin(
+    State(state): State<AppState<impl AppDb>>,
+    jar: SignedCookieJar,
+) -> Result<Html<String>> {
+    let Some(username) = jar.get("user") else {
+        return Err(StatusCode::INTERNAL_SERVER_ERROR.into());
+    };
+
+    let db = state
+        .db
+        .lock()
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+    let user = db
+        .get_user_by_name(username.value())
+        .map_err(|_| Redirect::to("/logout"))?;
+
     let tmpl = state.env.get_template("admin/index.html").unwrap();
-    Html(tmpl.render(context! {}).unwrap())
+    Ok(Html(
+        tmpl.render(context! {
+            user
+        })
+        .unwrap(),
+    ))
 }
 
 async fn get_users_admin(
@@ -435,7 +482,9 @@ async fn get_users_admin(
         .get_users()
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
-    let user = db.get_user_by_name(username.value()).map_err(|_| Redirect::to("/logout"))?;
+    let user = db
+        .get_user_by_name(username.value())
+        .map_err(|_| Redirect::to("/logout"))?;
 
     let tmpl = state.env.get_template("admin/users.html").unwrap();
     Ok(Html(tmpl.render(context! { user, users }).unwrap()))
@@ -462,7 +511,9 @@ async fn post_users_admin(
         .lock()
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
-    let mut user = db.get_user_by_id(form.id).map_err(|_| StatusCode::BAD_REQUEST)?;
+    let mut user = db
+        .get_user_by_id(form.id)
+        .map_err(|_| StatusCode::BAD_REQUEST)?;
     match form.cmd {
         UserCmd::GrantBlue => user.set_blue(true),
         UserCmd::RemoveBlue => user.set_blue(false),
