@@ -201,13 +201,13 @@ async fn post_register(
             .add_user(new_user)
             .map_err(|err| {
                 let err_str = format!("failed to add user: {}", err);
-                Redirect::to(&format!("/register#{}", encode(&err_str)))
+                Redirect::to(&format!("/register?err={}", encode(&err_str)))
             })?;
 
         jar = jar.add(Cookie::new("user", sign_up.username));
     }
 
-    Ok((jar, Redirect::to("/")))
+    Ok((jar, Redirect::to(&format!("/?success={}", "Registration successful!"))))
 }
 
 async fn get_login(State(state): State<AppState<impl AppDb>>, jar: SignedCookieJar) -> Response {
