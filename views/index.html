@@ -1,0 +1,31 @@
+<head>
+    <link rel="stylesheet" href="/assets/style.css">
+</head>
+{% if user %}
+    {% if user.role == "Admin" %}
+    <a href="/admin">Admin Panel</a><br>
+    {% endif %}
+    <a href="/create_post">New Post</a><br>
+    <a href="/profile/{{user.id}}">My Profile</a><br>
+    <a href="/settings">Settings</a><br>
+    <form action="/logout" method="post">
+        <button type="submit" class="btn-link">Logout</button>
+    </form>
+{% else %}
+    <a href="/register">Sign Up</a><br>
+    <a href="/login">Sign In</a><br>
+{% endif %}
+
+{% for post in posts|reverse %}
+    {% set user = user_map[post.author_id] %}
+    <div>
+        <p><b><a href="/profile/{{user.id}}">{{ user.name }}</a></b>
+        {% if user.blue %}
+        | <b>BLUE</b>
+        {% endif %}
+        </p>
+        {{ post.timestamp|format_time }}
+        <br>
+        <p>{{ post.contents }}</p>
+    </div>
+{% endfor %}

@@ -1,0 +1,40 @@
+<head>
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+
+<a href="/admin">Admin Panel</a>
+
+<table>
+    <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Password</th>
+            <th scope="col">Role</th>
+            <th scope="col">Blue</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for user in users %}
+        <tr>
+            <td>{{ user.name }}</td>
+            <td>{{ user.password }}</td>
+            <td>{{ user.role }}</td>
+            {% if user.blue %}
+            <td>
+                <form action="/admin/users" method="post">
+                    <input type="hidden" name="id" value="{{user.id}}">
+                    <button type="submit" class="btn-link" name="cmd" value="RemoveBlue">✅</button>
+                </form>
+            </td>
+            {% else %}
+            <td>
+                <form action="/admin/users" method="post">
+                    <input type="hidden" name="id" value="{{user.id}}">
+                    <button type="submit" class="btn-link" name="cmd" value="GrantBlue">❌</button>
+                </form>
+            </td>
+            {% endif %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

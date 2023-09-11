@@ -1,0 +1,10 @@
+<a href="/">Home</a><br>
+<h2>{{ user.name }}</h2>
+
+{% if user.blue %}
+<b>BLUE</b>
+{% endif %}
+
+{% autoescape false %}
+<p>{{user.bio}}</p>
+{% endautoescape %}
