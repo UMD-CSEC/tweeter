@@ -266,13 +266,18 @@ async fn post_logout(
 async fn get_create_post(
     State(state): State<AppState<impl AppDb>>,
     jar: SignedCookieJar
-) -> Response {
-    if jar.get("user").is_none() {
-        return Redirect::to("/login").into_response();
-    }
+) -> Result<Html<String>> {
+    let Some(username) = jar.get("user")  else {
+        return Err(Redirect::to("/login").into());
+    };
+
+    let db = state.db.lock().map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+    let user = db.get_user_by_name(username.value()).map_err(|_| Redirect::to("/logout"))?;
 
     let tmpl = state.env.get_template("create_post.html").unwrap();
-    Html(tmpl.render(context! {}).unwrap()).into_response()
+    Ok(Html(tmpl.render(context! {
+        user
+    }).unwrap()))
 }
 
 #[derive(Deserialize)]
@@ -414,7 +419,14 @@ async fn get_admin(State(state): State<AppState<impl AppDb>>) -> Html<String> {
     Html(tmpl.render(context! {}).unwrap())
 }
 
-async fn get_users_admin(State(state): State<AppState<impl AppDb>>) -> Result<Html<String>> {
+async fn get_users_admin(
+    State(state): State<AppState<impl AppDb>>,
+    jar: SignedCookieJar,
+) -> Result<Html<String>> {
+    let Some(username) = jar.get("user") else {
+        return Err(StatusCode::INTERNAL_SERVER_ERROR.into());
+    };
+
     let db = state
         .db
         .lock()
@@ -422,8 +434,11 @@ async fn get_users_admin(State(state): State<AppState<impl AppDb>>) -> Result<Ht
     let users = db
         .get_users()
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+    let user = db.get_user_by_name(username.value()).map_err(|_| Redirect::to("/logout"))?;
+
     let tmpl = state.env.get_template("admin/users.html").unwrap();
-    Ok(Html(tmpl.render(context! { users }).unwrap()))
+    Ok(Html(tmpl.render(context! { user, users }).unwrap()))
 }
 
 #[derive(Deserialize)]
