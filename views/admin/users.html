@@ -1,9 +1,6 @@
-<head>
-<link rel="stylesheet" href="/assets/style.css">
-</head>
-
-<a href="/admin">Admin Panel</a>
-
+{% extends "base.html" %}
+{% block title %}Manage users{% endblock %}
+{% block body %}
 <table>
     <thead>
         <tr>
@@ -38,3 +35,4 @@
     {% endfor %}
     </tbody>
 </table>
+{% endblock %}

@@ -1,12 +1,77 @@
 .btn-link {
-    border: none;
-    outline: none;
-    background: none;
-    cursor: pointer;
-    color: #0000EE;
-    padding: 0;
-    text-decoration: underline;
-    font-family: inherit;
-    font-size: inherit;
+	border: none;
+	outline: none;
+	background: none;
+	padding: 0;
+	cursor: pointer;
+	font-family: inherit;
+	font-size: inherit;
 }
 
+html {
+	height: 100%;
+}
+
+body {
+	background: #eee;
+	margin: 0;
+	display: grid;
+	grid-template-columns: 2fr 3fr 2fr;
+	grid-template-areas:
+	"nav nav nav"
+	"leftbar body sidebar";
+	gap: 10px;
+}
+
+div.verified-ad {
+	border: 1px solid black;
+	border-radius: 15px;
+	padding: 5px;
+	margin: 5px;
+}
+
+div.verified-ad h2 {
+	text-align: center;
+}
+
+img.logo {
+	height: 60px;
+	border-radius: 15px;
+}
+
+div.spacer {
+	flex-grow: 1;
+}
+
+div.content {
+	grid-area: body;
+}
+
+div.navbar {
+	display: flex;
+	flex-flow: row nowrap;
+	align-items: center;
+	background: #ddf;
+	font-size: 2em;
+	padding: 10px;
+	grid-area: nav;
+	margin-bottom: 10px;
+}
+
+div.navbar .link {
+	padding: 10px;
+	border-radius: 10px;
+	margin: 0px 15px;
+	color: black;
+	text-decoration: none;
+}
+
+div.navbar .link:hover {
+	background: #ccf;
+}
+
+div.post {
+	border: 1px solid black;
+	border-radius: 5px;
+	padding: 10px;
+}

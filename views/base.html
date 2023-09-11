@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="/assets/style.css">
+<link rel="icon" type="image/x-icon" href="/assets/favicon.png">
+<title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+<div class="navbar">
+	<a href="/"><img class="logo" src="/assets/logo.png"></a>
+	<div class="spacer"></div>
+{% if user %}
+    {% if user.role == "Admin" %}
+    <a href="/admin" class="link">Admin Panel</a>
+    <a href="/admin/users" class="link">Manage Users</a>
+    {% endif %}
+    <a href="/create_post" class="link">New Post</a>
+    <a href="/profile/{{user.id}}" class="link">My Profile</a>
+    <a href="/settings" class="link">Settings</a>
+    <form action="/logout" method="post">
+        <button type="submit" class="link btn-link">Logout</button>
+    </form>
+{% else %}
+    <a href="/register" class="link">Sign Up</a>
+    <a href="/login" class="link">Sign In</a>
+{% endif %}
+</div>
+<div class="verified-ad">
+	<h2>get blue RIGHT NOW</h2>
+	<p>Pay us $8 to get blue!</p>
+	<p>Benefits include:</p>
+	<ul>
+		<li>TBD</li>
+	</ul>
+</div>
+{% block body %}{% endblock %}
+</body>
+</html>
