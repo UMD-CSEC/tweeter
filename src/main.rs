@@ -321,23 +321,31 @@ async fn post_create_post(
 
 async fn get_profile(
     State(state): State<AppState<impl AppDb>>,
+    jar: SignedCookieJar,
     Path(user_id): Path<u64>,
 ) -> Result<Html<String>> {
     let db = state
         .db
         .lock()
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
-    let user = db.get_user_by_id(user_id).map_err(|_| {
+
+    let profile_user = db.get_user_by_id(user_id).map_err(|_| {
         (
             StatusCode::NOT_FOUND,
             format!("no user with id {}", user_id),
         )
     })?;
 
+    let curr_user = jar.get("user")
+        .and_then(|c| {
+            db.get_user_by_name(c.value()).ok()
+        });
+
     let tmpl = state.env.get_template("profile.html").unwrap();
     Ok(Html(
         tmpl.render(context! {
-            user
+            user => curr_user,
+            profile_user
         })
         .unwrap(),
     ))

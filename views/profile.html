@@ -2,14 +2,14 @@
 {% block title %}Profile{% endblock %}
 {% block body %}
 <div class="content">
-<h2>{{ user.name }}</h2>
+<h2>{{ profile_user.name }}</h2>
 
-{% if user.blue %}
+{% if profile_user.blue %}
 <b>BLUE</b>
 {% endif %}
 
 {% autoescape false %}
-<p>{{user.bio}}</p>
+<p>{{profile_user.bio}}</p>
 <div>
 {% endautoescape %}
 {% endblock %}
