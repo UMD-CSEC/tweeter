@@ -21,17 +21,57 @@ body {
 	"nav nav nav"
 	"leftbar body sidebar";
 	gap: 10px;
+	font-size: 18px;
+	align-items: start;
+}
+
+@property --adangle {
+	syntax: '<angle>';
+	initial-value: 0deg;
+	inherits: false;
 }
 
 div.verified-ad {
-	border: 1px solid black;
+	border: 3px solid black;
 	border-radius: 15px;
-	padding: 5px;
+	padding: 6px;
 	margin: 5px;
+	background: linear-gradient(var(--adangle), #f66, lightgreen, skyblue);
+	animation: 2s linear 0s infinite alternate anglecycle;
+}
+
+@keyframes anglecycle {
+	0% { --adangle: -50deg; }
+	100% { --adangle: 80deg; }
+}
+
+@property --adcolor {
+	syntax: '<number>';
+	initial-value: 0;
+	inherits: false;
+}
+
+marquee.ad-title {
+	font-size: 2em;
+	font-weight: bold;
+	color: hsl(var(--adcolor) 100% 50%);
+	animation: 3s infinite normal colorcycle;
+}
+
+@keyframes colorcycle {
+	0% { --adcolor: 0; }
+	25% { --adcolor: 90; }
+	50% { --adcolor: 180; }
+	75% { --adcolor: 270; }
+	100% { --adcolor: 360; }
 }
 
 div.verified-ad h2 {
 	text-align: center;
+}
+
+div.verified-ad p, div.verified-ad ul {
+	font-size: 1.3em;
 }
 
 img.logo {
@@ -52,7 +92,7 @@ div.navbar {
 	flex-flow: row nowrap;
 	align-items: center;
 	background: #ddf;
-	font-size: 2em;
+	font-size: 30px;
 	padding: 10px;
 	grid-area: nav;
 	margin-bottom: 10px;
@@ -72,6 +112,36 @@ div.navbar .link:hover {
 
 div.post {
 	border: 1px solid black;
-	border-radius: 5px;
+	border-radius: 15px;
 	padding: 10px;
+	margin: 5px;
+}
+
+input[type="submit"] {
+	outline: none;
+	border: none;
+	background: #adf;
+	padding: 5px;
+	border-radius: 5px;
+	font-family: inherit;
+	font-size: inherit;
+}
+
+input[type="submit"]:hover {
+	background: #ace;
+}
+
+input[type="submit"]:active {
+	background: #9bc;
+}
+
+form#signup, form#signin, form#settings {
+	display: flex;
+	flex-flow: column nowrap;
+	grid-area: body;
+}
+
+input[type="text"], textarea {
+	padding: 4px;
+	border-radius: 4px;
 }

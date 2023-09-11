@@ -1,16 +1,16 @@
 {% extends "base.html" %}
 {% block title %}Settings{% endblock %}
 {% block body %}
-<h2>{{ user.name }}</h2>
 
 <form id="settings" action="/settings" method="post">
 
-    <label for="currpass">Current password: </label><br>
+	<h2>Settings for {{ user.name }}</h2>
+    <label for="currpass">Current password: </label>
     <input type="text" id="currpass" name="currpass"><br>
-    <label for="newpass">New password: </label><br>
+    <label for="newpass">New password: </label>
     <input type="text" id="newpass" name="newpass"><br>
 
-	<label for="bio">Bio: </label><br>
+	<label for="bio">Bio: </label>
     <textarea id="bio" name="bio" rows="5" cols="40">{{ user.bio }}</textarea><br>
 
 	<input type="submit" value="Save changes">
