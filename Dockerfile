@@ -21,5 +21,8 @@ COPY --from=builder /app/target/release/tweeter /usr/local/bin
 COPY --from=builder /app/views views
 COPY --from=builder /app/assets assets
 
+# EST gang
+ENV TZ="America/New_York"
+
 EXPOSE 1447
 ENTRYPOINT ["/usr/local/bin/tweeter"]
