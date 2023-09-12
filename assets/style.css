@@ -13,10 +13,12 @@ html {
 }
 
 body {
-	background: #eee;
+	min-height: 100%;
+	background: linear-gradient(45deg, black, white);
 	margin: 0;
 	display: grid;
 	grid-template-columns: 2fr 3fr 2fr;
+	grid-template-rows: max-content 1fr;
 	grid-template-areas:
 	"nav nav nav"
 	"leftbar body sidebar";
@@ -36,11 +38,13 @@ div.verified-ad {
 	border-radius: 15px;
 	padding: 6px;
 	margin: 5px;
+	max-width: 27vw;
 }
 
 marquee.cool-title {
 	font-size: 2em;
 	font-weight: bold;
+	text-shadow: 1px 1px black;
 }
 
 div.verified-ad h2 {
@@ -88,10 +92,25 @@ div.navbar .link:hover {
 }
 
 div.post {
-	border: 1px solid black;
+	border: 2px solid black;
 	border-radius: 15px;
 	padding: 10px;
-	margin: 5px;
+	margin: 15px;
+	background: #fff7;
+}
+
+div.blue {
+	border: 3px solid black;
+	box-shadow: blue 5px 5px;
+	background: lightblue;
+}
+
+div.post:not(.blue) a {
+	color: black;
+}
+
+img.blue-icon {
+	max-height: 1em;
 }
 
 input[type="submit"] {
@@ -121,4 +140,8 @@ form#signup, form#signin, form#settings {
 input[type="text"], textarea {
 	padding: 4px;
 	border-radius: 4px;
+}
+
+span.blue-promo {
+	background: cornflowerblue;
 }

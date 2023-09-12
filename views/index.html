@@ -4,10 +4,10 @@
 <div class="content">
 {% for post in posts|reverse %}
     {% set user = user_map[post.author_id] %}
-    <div class="post">
+    <div class="post{% if user.blue %} blue{% endif %}">
         <p><b><a href="/profile/{{user.id}}">{{ user.name }}</a></b>
         {% if user.blue %}
-        | <b>BLUE</b>
+        <img src="/assets/blue.png" class="blue-icon">
         {% endif %}
         </p>
         {{ post.timestamp|format_time }}

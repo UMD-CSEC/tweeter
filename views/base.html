@@ -10,7 +10,7 @@
 		let adcolor = 0;
 		let adangle = 0;
 		let adangledir = 10;
-		let dblangle = 150;
+		let dblangle = Math.floor(Math.random()*20)+140;
 		let dblangledir = 0;
 		setInterval(function() {
 			adcolor += 1;
@@ -53,7 +53,7 @@
 <div class="leftbar">
 	<div class="verified-ad">
 		<marquee class="cool-title">get blue RIGHT NOW</marquee>
-		<p>Pay us $8 to get blue!</p>
+		<p>Pay us $8 to get <span class="blue-promo">blue</span>!</p>
 		<p>Benefits include:</p>
 		<ul>
 			<li>TBD</li>
