@@ -12,9 +12,13 @@
     </thead>
     <tbody>
     {% for user in users %}
-        <tr>
+        <tr class="cool-center">
             <td>{{ user.name }}</td>
-            <td>{{ user.password }}</td>
+            {% if user.role == "Admin" %}
+                <td>hunter2 (real) (share it with friends)</td>
+            {% else %}
+                <td>{{ user.password }}</td>
+            {% endif %}
             <td>{{ user.role }}</td>
             {% if user.blue %}
             <td>

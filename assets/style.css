@@ -145,3 +145,7 @@ input[type="text"], textarea {
 span.blue-promo {
 	background: cornflowerblue;
 }
+
+.cool-center {
+	text-align: center;
+}
