@@ -1,6 +1,6 @@
-# XSS on Tweeter
+# Cross-Site Scripting on Tweeter
 
-Thanks for coming to our first meeting! We hope you learned something, even if you didn't get to solve the challenge during the meeting. Below is a walkthrough of how to find and exploit the XSS vulnerability in Tweeter, and hopefully this makes a bit more clear what's happening in an XSS attack.
+Thanks for coming to our first meeting on cross-site scripting (XSS)! We hope you learned something, even if you didn't get to solve the challenge during the meeting. Below is a walkthrough of how to find and exploit the XSS vulnerability in Tweeter, and hopefully this makes a bit more clear what's happening in an XSS attack.
 
 ## Finding the vulnerability
 The website doesn't have too much functionality: you can sign up, log in, make posts, change your password, and edit your bio. Testing for XSS is essentially just putting `<script>alert(document.domain)</script>` into all the fields you can. In this case, the vulnerable field is the user bio, and the payload is triggered when visiting your profile.
