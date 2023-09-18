@@ -17,7 +17,7 @@ body {
 	background: linear-gradient(45deg, black, white);
 	margin: 0;
 	display: grid;
-	grid-template-columns: 2fr 3fr 2fr;
+	grid-template-columns: 25% 60% 1fr;
 	grid-template-rows: max-content 1fr;
 	grid-template-areas:
 	"nav nav nav"
@@ -25,6 +25,7 @@ body {
 	gap: 10px;
 	font-size: 18px;
 	align-items: start;
+	word-wrap: break-word;
 }
 
 div.leftbar {
